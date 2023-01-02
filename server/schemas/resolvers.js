@@ -13,14 +13,7 @@ const resolvers = {
             throw new AuthenticationError('Must be logged in!');
         }
     },
-
     Mutation: {
-        addUser: async (parent, args) => {
-            const user = await User.create(args);
-            const token = signToken(user);
-
-            return { token, user }
-        },
         login: async (parent, { email, password }) => {
             const user = await User.findOne({ email });
 
@@ -35,35 +28,38 @@ const resolvers = {
             }
 
             const token = signToken(user);
-            return { token, user}
+            return { token, user};
         },
+        addUser: async (parent, args) => {
+            const user = await User.create(args);
+            const token = signToken(user);
 
-        saveBook: async (parent, { bookData }, context) => {
+            return { token, user };
+        },
+        saveBook: async (parent, { input }, context) => {
             if (context.user) {
-                const updateUser = await User.findByIdAndUpdate(
+                const updatedUser = await User.findOneAndUpdate(
                     { _id: context.user._id },
-                    { $push: { savedBooks: bookData } },
-                    { new: true}
+                    { $addToSet: { savedBooks: input } },
+                    { new: true, runValidators: true }
                 );
 
-                return updateUser;
+                return updatedUser;
             }
-
             throw new AuthenticationError('You must be logged in!');
         },
-
         removeBook: async (parent, { bookId }, context) => {
             if (context.user) {
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: context.user._id },
-                    { $pull: { savedBooks: { bookId } } },
+                    { $pull: { savedBooks: { bookId: bookId } } },
                     { new: true }
                 );
                 return updatedUser;
             }
             throw new AuthenticationError('You must be logged in!');
-        }
-    }
-}
+        },
+    },
+};
 
 module.exports = resolvers;
