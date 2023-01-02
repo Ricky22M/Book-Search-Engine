@@ -40,13 +40,13 @@ const resolvers = {
 
         saveBook: async (parent, { bookData }, context) => {
             if (context.user) {
-                const updatedUser = await User.findByIdAndUpdate(
+                const updateUser = await User.findByIdAndUpdate(
                     { _id: context.user._id },
                     { $push: { savedBooks: bookData } },
                     { new: true}
                 );
 
-                return updatedUser;
+                return updateUser;
             }
 
             throw new AuthenticationError('You must be logged in!');
@@ -54,12 +54,12 @@ const resolvers = {
 
         removeBook: async (parent, { bookId }, context) => {
             if (context.user) {
-                const updateUser = await User.findOneAndUpdate(
+                const updatedUser = await User.findOneAndUpdate(
                     { _id: context.user._id },
                     { $pull: { savedBooks: { bookId } } },
                     { new: true }
                 );
-                return updateUser;
+                return updatedUser;
             }
             throw new AuthenticationError('You must be logged in!');
         }

@@ -6,7 +6,6 @@ import Navbar from './components/Navbar';
 
 import { ApolloProvider } from '@apollo/react-hooks';
 import ApolloClient from 'apollo-boost';
-import Switch from 'react-bootstrap/esm/Switch';
 
 const client = new ApolloClient({
   request: (operation) => {
@@ -27,7 +26,7 @@ function App() {
       <Router>
         <>
           <Navbar />
-          <Switch>
+          <Routes>
             <Route 
               exact
               path='/' 
@@ -43,7 +42,7 @@ function App() {
               render={() =>
               <h1 className='display-2'>Wrong page!</h1>}
             />
-          </Switch>
+          </Routes>
         </>
       </Router>
     </ApolloProvider>
