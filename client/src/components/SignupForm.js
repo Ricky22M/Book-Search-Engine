@@ -6,13 +6,18 @@ import Auth from '../utils/auth';
 
 const SignupForm = () => {
   // set initial form state
-  const [userFormData, setUserFormData] = useState({ username: '', email: '', password: '' });
+  const [userFormData, setUserFormData] = useState({ 
+    username: '', 
+    email: '', 
+    password: '' 
+  });
+
   // set state for form validation
   const [validated] = useState(false);
   // set state for alert
   const [showAlert, setShowAlert] = useState(false);
 
-  const [addUser, { error }] = useMutation(ADD_USER);
+  const [addUser, { error, data }] = useMutation(ADD_USER);
 
   useEffect(() => {
     if (error) {
@@ -24,7 +29,11 @@ const SignupForm = () => {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setUserFormData({ ...userFormData, [name]: value });
+
+    setUserFormData({
+      ...userFormData,
+      [name]: value 
+    });
   };
 
   const handleFormSubmit = async (event) => {
@@ -41,6 +50,7 @@ const SignupForm = () => {
       const { data } = await addUser({
         variables: { ...userFormData },
       });
+
       Auth.login(data.addUser.token);
     } catch (err) {
       console.error(err);
